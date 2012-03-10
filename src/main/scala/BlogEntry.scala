@@ -3,13 +3,16 @@ package hatedabot
 final case class BlogEntry(
   link        :BLOG_URL,
   title       :String,
-  description :String
+  description :String,
+  creater     :String
 ) {
   import BlogEntry._
 
-  def tweetString(hashtag:String = null):String = {
-    val tag = Option(hashtag).collect{case s if ! s.isEmpty => "#" + s }.getOrElse("")
-    (link + " " + title + " " + tag + " \n"+ description).take(LIMIT)
+  def tweetString(hashtags:Set[String] = Set.empty):String = {
+    val tags = hashtags.collect{case s if ! s.isEmpty => "#" + s }.mkString(" ")
+    Iterator(
+      link,title.replace("@",""),tags,description.replace("@","")
+    ).mkString("\n").take(LIMIT)
   }
 }
 
@@ -20,7 +23,8 @@ object BlogEntry{
     BlogEntry(
       (x \ "link").text,
       (x \ "title").text,
-      (x \ "description").text
+      (x \ "description").text,
+      (x \ "dc:creater").text
     )
   }
 }

@@ -16,19 +16,37 @@ object Main{
   }
 
   def run(conf:Config){
-    val db = new DB[BLOG_URL](conf.dbSize)
-    val client = TweetClient(conf.twitter)
-    val url = HATENA(conf.keyword)
-    while(true){
-      allCatchPrintStackTrace{
-        val o = (xml.XML.load(url) \ "item").map{ BlogEntry.apply }
-        val oldIds = db.selectAll
-        val newData = o.filterNot{a => oldIds.contains(a.link)}
-        db.insert(newData.map{_.link}:_*)
-        newData.reverseIterator.map{_.tweetString(conf.keyword)}.foreach{ Thread.sleep(500) ; client.tweet }
-      }
-      Thread.sleep(conf.interval.inMillis)
+    import conf._
+
+    val db = new DB[BLOG_URL](dbSize)
+    val client = TweetClient(twitter)
+
+    if(! firstTweet){
+      val newData = getEntries(keyword)
+      db.insert(newData.map{_.link}:_*)
+      println("first insert data = " + newData)
     }
+
+    @annotation.tailrec
+    def _run(){
+      Thread.sleep(interval.inMillis)
+      allCatchPrintStackTrace{
+        val oldIds = db.selectAll
+        val newData = getEntries(keyword).filterNot{a => oldIds.contains(a.link)}
+        db.insert(newData.map{_.link}:_*)
+        newData.reverseIterator.foreach{ entry =>
+          val str = entry.tweetString(hashtags)
+          Thread.sleep(tweetInterval.inMillis)
+          client tweet str
+        }
+      }
+      _run()
+    }
+
+    _run()
   }
 
+  def getEntries(keyword:String):Seq[BlogEntry] = {
+    (xml.XML.load(HATENA(keyword)) \ "item").map{ BlogEntry.apply }
+  }
 }
