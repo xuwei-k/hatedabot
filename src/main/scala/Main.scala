@@ -21,10 +21,18 @@ object Main{
     val db = new DB[BLOG_URL](dbSize)
     val client = TweetClient(twitter)
 
-    if(! firstTweet){
-      val newData = getEntries(keyword)
-      db.insert(newData.map{_.link}:_*)
-      println("first insert data = " + newData)
+    def tweet(data:Seq[BlogEntry]){
+      data.reverseIterator.foreach{ entry =>
+        Thread.sleep(tweetInterval.inMillis)
+        client.tweet(entry.tweetString(hashtags))
+      }
+    }
+
+    val firstData = getEntries(keyword)
+    db.insert(firstData.map{_.link}:_*)
+    println("first insert data = " + firstData)
+    if(firstTweet){
+      tweet(firstData)
     }
 
     @annotation.tailrec
@@ -34,11 +42,7 @@ object Main{
         val oldIds = db.selectAll
         val newData = getEntries(keyword).filterNot{a => oldIds.contains(a.link)}
         db.insert(newData.map{_.link}:_*)
-        newData.reverseIterator.foreach{ entry =>
-          val str = entry.tweetString(hashtags)
-          Thread.sleep(tweetInterval.inMillis)
-          client tweet str
-        }
+        tweet(newData)
       }
       _run()
     }
