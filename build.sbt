@@ -12,7 +12,7 @@ scalaVersion := "2.9.1"
 
 libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-core" % "2.2.5"
- ,"com.twitter" %% "util-eval" % "2.0.0"
+ ,"com.twitter" %% "util-eval" % "3.0.0"
  ,"org.specs2"  %% "specs2" % "1.8.2" % "test"
 )
 
@@ -26,7 +26,7 @@ scalacOptions <+= scalaSource in Compile map { "-P:sxr:base-directory:" + _.getA
 
 initialCommands in console :=
   Seq(
-    "net.liftweb.json","hatedabot","com.twitter.conversions.time","com.twitter.util"
+    "hatedabot","com.twitter.conversions.time","com.twitter.util"
   ).map{p =>
     "import " + p + "._;"
   }.mkString("\n")
