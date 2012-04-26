@@ -1,6 +1,5 @@
 /target
 /project/target
-/project/plugins/target
 /project/project/target
 *.swp
 *.class
