@@ -28,7 +28,9 @@ object Main{
       }
     }
 
-    val firstData = getEntries(keyword)
+    def entries() = getEntries(keyword,blockUsers)
+
+    val firstData = entries()
     db.insert(firstData.map{_.link}:_*)
     println("first insert data = " + firstData)
     if(firstTweet){
@@ -40,7 +42,7 @@ object Main{
       Thread.sleep(interval.inMillis)
       allCatchPrintStackTrace{
         val oldIds = db.selectAll
-        val newData = getEntries(keyword).filterNot{a => oldIds.contains(a.link)}
+        val newData = entries().filterNot{a => oldIds.contains(a.link)}
         db.insert(newData.map{_.link}:_*)
         tweet(newData)
       }
@@ -50,7 +52,13 @@ object Main{
     _run()
   }
 
-  def getEntries(keyword:String):Seq[BlogEntry] = {
-    (xml.XML.load(HATENA(keyword)) \ "item").map{ BlogEntry.apply }
+  def getEntries(keyword:String,blockUsers:Set[String] = Set.empty):Seq[BlogEntry] = {
+    (xml.XML.load(HATENA(keyword)) \ "item").map{
+      BlogEntry.apply
+    }.filterNot{ e =>
+      val a = blockUsers.contains(e.creator)
+      if(a)println("block ! " + e)
+      a
+    }
   }
 }

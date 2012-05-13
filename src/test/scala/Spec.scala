@@ -34,7 +34,7 @@ class Spec extends Specification{ def is=
       }and{
         str must not contain("@")
       }
-    }.forall(Main.getEntries("Scala"))
+    }.forall(Main.getEntries("Scala",Set("absj31")))
   }
 }
 

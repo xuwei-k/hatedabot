@@ -11,6 +11,7 @@ abstract class Config{
   val interval:Duration
   val dbSize:Int = 100
   val firstTweet:Boolean = false
+  val blockUsers:Set[String] = Set.empty
 }
 
 abstract class TwitterSettings{

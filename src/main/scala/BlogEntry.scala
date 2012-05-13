@@ -4,7 +4,7 @@ final case class BlogEntry(
   link        :BLOG_URL,
   title       :String,
   description :String,
-  creater     :String
+  creator     :String
 ) {
   import BlogEntry._
 
@@ -24,7 +24,7 @@ object BlogEntry{
       (x \ "link").text,
       (x \ "title").text,
       (x \ "description").text,
-      (x \ "dc:creater").text
+      (x \ "creator").text
     )
   }
 }
