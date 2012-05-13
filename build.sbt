@@ -2,6 +2,12 @@ name := "hatedabot"
 
 version := "0.1-SNAPSHOT"
 
+organization := "com.github.xuwei-k"
+
+licenses += ("MIT License",url("https://github.com/xuwei-k/hatedabot/blob/master/LICENSE.txt"))
+
+homepage := Some(url("https://github.com/xuwei-k/hatedabot"))
+
 externalResolvers ~= { _.filterNot{_.name.contains("Scala-Tools")} }
 
 resolvers ++= Seq(
