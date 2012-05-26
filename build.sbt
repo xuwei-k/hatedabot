@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
 
 scalacOptions += "-deprecation"
 
-seq(assemblySettings: _*)
+assemblySettings
 
 addCompilerPlugin("org.scala-tools.sxr" % "sxr_2.9.0" % "0.2.7")
 
