@@ -8,14 +8,14 @@ object Main{
   val HATENA = "http://k.hatena.ne.jp/keywordblog/"+(_:String)+"?mode=rss"
 
   def main(args:Array[String]){
-    val configFile = new File(
+    val file = new File(
       allCatch.opt(args.head).getOrElse("config")
     )
-    val conf = Eval[Config](configFile)
-    run(conf)
+    run(file)
   }
 
-  def run(conf:Config){
+  def run(file:File){
+    val conf = Eval[Config](file)
     import conf._
 
     val db = new DB[BLOG_URL](dbSize)
@@ -28,7 +28,10 @@ object Main{
       }
     }
 
-    def entries() = getEntries(keyword,blockUsers)
+    def entries() = {
+      val c = Eval[Config](file)
+      getEntries(c.keyword,c.blockUsers)
+    }
 
     val firstData = entries()
     db.insert(firstData.map{_.link}:_*)
