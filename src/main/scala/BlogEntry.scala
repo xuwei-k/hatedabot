@@ -1,5 +1,7 @@
 package hatedabot
 
+import scala.xml.Utility.Escapes.escMap
+
 final case class BlogEntry(
   link        :BLOG_URL,
   title       :String,
@@ -22,9 +24,12 @@ object BlogEntry{
   def apply(x:scala.xml.NodeSeq):BlogEntry = {
     BlogEntry(
       (x \ "link").text,
-      (x \ "title").text,
-      (x \ "description").text,
+      u((x \ "title").text),
+      u((x \ "description").text),
       (x \ "creator").text
     )
   }
+
+  def u(str :String):String =
+    escMap.foldLeft(str){case (a,(b,c)) => a.replace(c,b.toString)}
 }
