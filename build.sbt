@@ -19,9 +19,9 @@ resolvers ++= Seq(
 scalaVersion := "2.9.1"
 
 libraryDependencies ++= Seq(
-  "org.twitter4j" % "twitter4j-core" % "2.2.5"
+  "org.twitter4j" % "twitter4j-core" % "2.2.6"
  ,"com.twitter" %% "util-eval" % "3.0.0"
- ,"org.specs2"  %% "specs2" % "1.9" % "test"
+ ,"org.specs2"  %% "specs2" % "1.12.3" % "test"
 )
 
 scalacOptions += "-deprecation"
