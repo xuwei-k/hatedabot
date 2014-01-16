@@ -60,7 +60,7 @@ object Main{
       BlogEntry.apply
     }.filterNot{ e =>
       val a = blockUsers.contains(e.creator)
-      if(a)println("block ! " + e)
+//      if(a) println("block ! " + e)
       a
     }
   }

@@ -14,10 +14,10 @@ resolvers ++= Seq(
  "twitter4j" at "http://twitter4j.org/maven2"
 )
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.3"
 
 libraryDependencies ++= Seq(
-  "org.twitter4j" % "twitter4j-core" % "3.0.3"
+  "org.twitter4j" % "twitter4j-core" % "3.0.5"
  ,"com.twitter" %% "util-eval" % "6.3.5"
  ,"org.specs2"  %% "specs2" % "1.14" % "test"
 )
