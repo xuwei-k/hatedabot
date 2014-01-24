@@ -16,8 +16,10 @@ resolvers ++= Seq(
 
 scalaVersion := "2.10.3"
 
+val twitter4jVersion = "3.0.5"
+
 libraryDependencies ++= Seq(
-  "org.twitter4j" % "twitter4j-core" % "3.0.5"
+  "org.twitter4j" % "twitter4j-core" % twitter4jVersion
  ,"com.twitter" %% "util-eval" % "6.3.5"
  ,"org.specs2"  %% "specs2" % "1.14" % "test"
 )
@@ -26,12 +28,11 @@ scalacOptions += "-deprecation"
 
 assemblySettings
 
-AssemblyKeys.jarName in AssemblyKeys.assembly <<= (name, version).map{ (name, version) =>
-  val df = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")
-  <x>{name}-{df.format(new java.util.Date)}-{version}.jar</x>.text
+AssemblyKeys.jarName in AssemblyKeys.assembly := {
+  val df = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm")
+  s"${name.value}-${df.format(new java.util.Date)}-twitter4j-${twitter4jVersion}.jar"
 }
 
 publishTo := sys.env.get("MAVEN_DIRECTORY").map{ dir =>
   Resolver.file("gh-pages",file(dir))(Patterns(true, Resolver.mavenStyleBasePattern))
 }
-
