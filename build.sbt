@@ -36,3 +36,7 @@ AssemblyKeys.jarName in AssemblyKeys.assembly := {
 publishTo := sys.env.get("MAVEN_DIRECTORY").map{ dir =>
   Resolver.file("gh-pages",file(dir))(Patterns(true, Resolver.mavenStyleBasePattern))
 }
+
+resourceGenerators in Compile += task(
+  Seq(baseDirectory.value / "build.sbt")
+)
