@@ -9,7 +9,7 @@ object Main{
 
   def main(args:Array[String]){
     val file = new File(
-      allCatch.opt(args.head).getOrElse("config")
+      allCatch.opt(args.head).getOrElse("config.scala")
     )
     run(file)
   }
@@ -40,6 +40,22 @@ object Main{
       tweet(firstData)
     }
 
+    def allCatchPrintStackTrace(body: => Any){
+      try{
+        val r = body
+      }catch{
+        case e: Throwable =>
+          try{
+            val df = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm")
+            println(df.format(new java.util.Date))
+            e.printStackTrace
+            Mail(e.getMessage, e.getStackTrace.mkString("\n"), conf.mail)
+          }catch{
+            case e: Throwable =>
+          }
+      }
+    }
+
     @annotation.tailrec
     def _run(){
       Thread.sleep(interval.inMillis)
@@ -55,7 +71,7 @@ object Main{
     _run()
   }
 
-  def getEntries(keyword:String,blockUsers:Set[String] = Set.empty):Seq[BlogEntry] = {
+  def getEntries(keyword: String, blockUsers: Set[String]): Seq[BlogEntry] = {
     (xml.XML.load(HATENA(keyword)) \ "item").map{
       BlogEntry.apply
     }.filterNot{ e =>

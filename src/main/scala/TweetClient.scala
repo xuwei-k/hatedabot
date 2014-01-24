@@ -3,7 +3,7 @@ package hatedabot
 import twitter4j._
 import twitter4j.conf._
 
-case class TweetClient(conf:TwitterSettings) {
+final case class TweetClient(conf:TwitterSettings) {
 
   val t = {
     val c = new ConfigurationBuilder
@@ -17,9 +17,7 @@ case class TweetClient(conf:TwitterSettings) {
   }
 
   def tweet(str:String){
-    allCatchPrintStackTrace{
-      t.updateStatus(str)
-    }
+    t.updateStatus(str)
   }
 
 }

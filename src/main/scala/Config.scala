@@ -12,6 +12,7 @@ abstract class Config{
   val dbSize:Int = 100
   val firstTweet:Boolean = false
   val blockUsers:Set[String] = Set.empty
+  def mail: Mail.Conf
 }
 
 abstract class TwitterSettings{

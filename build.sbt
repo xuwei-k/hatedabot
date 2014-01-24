@@ -22,6 +22,7 @@ libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-core" % twitter4jVersion
  ,"com.twitter" %% "util-eval" % "6.3.5"
  ,"org.specs2"  %% "specs2" % "1.14" % "test"
+ ,"org.scalaj"  %% "scalaj-http" % "0.3.12"
 )
 
 scalacOptions += "-deprecation"
@@ -40,3 +41,5 @@ publishTo := sys.env.get("MAVEN_DIRECTORY").map{ dir =>
 resourceGenerators in Compile += task(
   Seq(baseDirectory.value / "build.sbt")
 )
+
+sourcesInBase := false
