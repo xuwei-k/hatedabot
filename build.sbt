@@ -16,14 +16,14 @@ resolvers ++= Seq(
 
 scalaVersion := "2.10.4"
 
-val twitter4jVersion = "4.0.1"
+val twitter4jVersion = "4.0.2"
 
 libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-core" % twitter4jVersion
  ,"com.twitter" %% "util-eval" % "6.3.5"
- ,"io.argonaut" %% "argonaut" % "6.0.2"
- ,"org.specs2"  %% "specs2" % "1.14" % "test"
- ,"org.scalaj"  %% "scalaj-http" % "0.3.12"
+ ,"io.argonaut" %% "argonaut" % "6.0.4"
+ ,"org.specs2"  %% "specs2" % "2.3.13" % "test"
+ ,"org.scalaj"  %% "scalaj-http" % "0.3.16"
 )
 
 scalacOptions += "-deprecation"
