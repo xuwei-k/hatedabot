@@ -14,19 +14,31 @@ resolvers ++= Seq(
  "twitter4j" at "http://twitter4j.org/maven2"
 )
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.2"
 
 val twitter4jVersion = "4.0.2"
 
-libraryDependencies ++= Seq(
-  "org.twitter4j" % "twitter4j-core" % twitter4jVersion
- ,"com.twitter" %% "util-eval" % "6.3.5"
- ,"io.argonaut" %% "argonaut" % "6.0.4"
- ,"org.specs2"  %% "specs2" % "2.3.13" % "test"
- ,"org.scalaj"  %% "scalaj-http" % "0.3.16"
+libraryDependencies ++= (
+  ("org.twitter4j" % "twitter4j-core" % twitter4jVersion) ::
+  ("org.scala-lang" % "scala-compiler" % scalaVersion.value) ::
+  ("io.argonaut" %% "argonaut" % "6.1-M4") ::
+  ("org.specs2"  %% "specs2" % "2.4" % "test") ::
+  ("org.scalaj"  %% "scalaj-http" % "0.3.16") ::
+  Nil
 )
 
-scalacOptions += "-deprecation"
+scalacOptions ++= (
+  "-deprecation" ::
+  "-unchecked" ::
+  "-Xlint" ::
+  "-language:postfixOps" ::
+  "-language:existentials" ::
+  "-language:higherKinds" ::
+  "-language:implicitConversions" ::
+  "-Ywarn-unused" ::
+  "-Ywarn-unused-import" ::
+  Nil
+)
 
 assemblySettings
 

@@ -1,11 +1,10 @@
 package hatedabot
 
 import scala.util.control.Exception.allCatch
-import com.twitter.util.Eval
 import java.io.File
 
 object Main{
-  val HATENA = "http://k.hatena.ne.jp/keywordblog/"+(_:String)+"?mode=rss"
+  private[this] val HATENA = "http://k.hatena.ne.jp/keywordblog/"+(_:String)+"?mode=rss"
 
   def main(args:Array[String]){
     val file = new File(
@@ -14,22 +13,22 @@ object Main{
     run(file)
   }
 
-  def run(file:File){
-    val conf = Eval[Config](file)
+  def run(file: File){
+    val conf = Eval.fromFile[Config](file)
     import conf._
 
     val db = new DB[BLOG_URL](dbSize)
     val client = TweetClient(twitter)
 
-    def tweet(data:Seq[BlogEntry]){
+    def tweet(data: Seq[BlogEntry]){
       data.reverseIterator.foreach{ entry =>
-        Thread.sleep(tweetInterval.inMillis)
+        Thread.sleep(tweetInterval.toMillis)
         client.tweet(entry.tweetString(hashtags))
       }
     }
 
     def entries() = {
-      val c = Eval[Config](file)
+      val c = Eval.fromFile[Config](file)
       getEntries(c.keyword,c.blockUsers)
     }
 
@@ -42,7 +41,7 @@ object Main{
 
     def allCatchPrintStackTrace(body: => Any){
       try{
-        val r = body
+        val _ = body
       }catch{
         case e: Throwable =>
           try{
@@ -58,7 +57,7 @@ object Main{
 
     @annotation.tailrec
     def _run(){
-      Thread.sleep(interval.inMillis)
+      Thread.sleep(interval.toMillis)
       allCatchPrintStackTrace{
         val oldIds = db.selectAll
         val newData = entries().filterNot{a => oldIds.contains(a.link)}

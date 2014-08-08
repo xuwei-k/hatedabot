@@ -1,5 +1,5 @@
 import hatedabot._
-import com.twitter.conversions.time._
+import scala.concurrent.duration._
 
 new Config{
   val keyword = "Scala"
