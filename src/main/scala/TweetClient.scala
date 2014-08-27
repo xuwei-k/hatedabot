@@ -16,7 +16,7 @@ final case class TweetClient(conf:TwitterSettings) {
     new TwitterFactory(c.build()).getInstance()
   }
 
-  def tweet(str:String){
+  def tweet(str: String){
     t.updateStatus(str)
   }
 

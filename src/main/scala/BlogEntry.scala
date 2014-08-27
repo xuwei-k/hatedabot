@@ -10,7 +10,7 @@ final case class BlogEntry(
 ) {
   import BlogEntry._
 
-  def tweetString(hashtags:Set[String] = Set.empty):String = {
+  def tweetString(hashtags: Set[String] = Set.empty):String = {
     val tags = hashtags.collect{case s if ! s.isEmpty => "#" + s }.mkString(" ")
     Iterator(
       link,title.replace("@",""),tags,description.replace("@","")

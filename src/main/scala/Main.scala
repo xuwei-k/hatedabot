@@ -6,77 +6,66 @@ import java.io.File
 object Main{
   private[this] val HATENA = "http://k.hatena.ne.jp/keywordblog/"+(_:String)+"?mode=rss"
 
-  def main(args:Array[String]){
+  def main(args: Array[String]): Unit = {
     val file = new File(
       allCatch.opt(args.head).getOrElse("config.scala")
     )
     run(file)
   }
 
-  def run(file: File){
-    val conf = Eval.fromFile[Config](file)
-    import conf._
+  def run(file: File): Unit = {
+    val env = Env.fromConfigFile(file)
+    import env._, env.config._
 
-    val db = new DB[BLOG_URL](dbSize)
-    val client = TweetClient(twitter)
-
-    def tweet(data: Seq[BlogEntry]){
-      data.reverseIterator.foreach{ entry =>
+    val firstData = getEntries(keyword, blockUsers)
+    db.insert(firstData.map{_.link}.toList)
+    printDateTime()
+    println("first insert data = " + firstData)
+    if (firstTweet) {
+      firstData.reverseIterator.foreach { entry =>
         Thread.sleep(tweetInterval.toMillis)
         client.tweet(entry.tweetString(hashtags))
       }
     }
+    loop(env)
+  }
 
-    def entries() = {
-      val c = Eval.fromFile[Config](file)
-      getEntries(c.keyword,c.blockUsers)
-    }
-
-    val firstData = entries()
-    db.insert(firstData.map{_.link}:_*)
-    println("first insert data = " + firstData)
-    if(firstTweet){
-      tweet(firstData)
-    }
-
-    def allCatchPrintStackTrace(body: => Any){
-      try{
-        val _ = body
-      }catch{
-        case e: Throwable =>
-          try{
-            val df = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm")
-            println(df.format(new java.util.Date))
-            e.printStackTrace
-            Mail(e.getMessage, e.getStackTrace.mkString("\n"), conf.mail)
-          }catch{
-            case e: Throwable =>
-          }
-      }
-    }
-
-    @annotation.tailrec
-    def _run(){
+  @annotation.tailrec
+  def loop(env: Env): Unit = {
+    import env._, env.config._
+    try {
       Thread.sleep(interval.toMillis)
-      allCatchPrintStackTrace{
-        val oldIds = db.selectAll
-        val newData = entries().filterNot{a => oldIds.contains(a.link)}
-        db.insert(newData.map{_.link}:_*)
-        tweet(newData)
+      val oldIds = db.selectAll
+      val newData = getEntries(keyword, blockUsers).filterNot{ a => oldIds.contains(a.link)}
+      db.insert(newData.map{_.link}.toList)
+      newData.reverseIterator.foreach { e =>
+        Thread.sleep(env.config.tweetInterval.toMillis)
+        env.client.tweet(e.tweetString(hashtags))
       }
-      _run()
+    } catch {
+      case e: Throwable =>
+        try {
+          printDateTime()
+          e.printStackTrace()
+          Mail(e.getMessage, e.getStackTrace.mkString("\n"), mail)
+        } catch {
+          case e: Throwable =>
+            e.printStackTrace()
+        }
     }
+    loop(env.reload)
+  }
 
-    _run()
+  def printDateTime(): Unit = {
+    val df = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm")
+    println(df.format(new java.util.Date))
   }
 
   def getEntries(keyword: String, blockUsers: Set[String]): Seq[BlogEntry] = {
     (xml.XML.load(HATENA(keyword)) \ "item").map{
       BlogEntry.apply
     }.filterNot{ e =>
-      val a = blockUsers.contains(e.creator)
-//      if(a) println("block ! " + e)
-      a
+      blockUsers.contains(e.creator)
     }
   }
 }
