@@ -9,7 +9,7 @@ abstract class Config{
   val tweetInterval: Duration = 500 millis
   val interval: Duration
   val dbSize: Int = 100
-  val firstTweet: Boolean = false
+  val firstTweetCount: Int
   val blockUsers: Set[String] = Set.empty
   def mail: Mail.Conf
 }
