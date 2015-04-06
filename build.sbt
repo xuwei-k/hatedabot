@@ -35,6 +35,10 @@ scalacOptions ++= (
   "-language:existentials" ::
   "-language:higherKinds" ::
   "-language:implicitConversions" ::
+  Nil
+)
+
+scalacOptions in compile++= (
   "-Ywarn-unused" ::
   "-Ywarn-unused-import" ::
   Nil
