@@ -2,4 +2,4 @@ language: scala
 
 sudo: false
 
-script: sbt -debug test
+script: sbt test
