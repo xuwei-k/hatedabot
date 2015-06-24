@@ -10,7 +10,7 @@ homepage := Some(url("https://github.com/xuwei-k/hatedabot"))
 
 resolvers += Opts.resolver.sonatypeReleases
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 val twitter4jVersion = "4.0.4"
 
